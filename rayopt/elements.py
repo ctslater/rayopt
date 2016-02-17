@@ -205,8 +205,12 @@ class Element(NameMixin, TransformMixin):
     def refract(self, y, u0, mu):
         return u0
 
-    def clip(self, y, u):
-        good = np.square(y[:, :2]).sum(1) <= self.radius**2
+    def clip(self, y, u, ref_ray=None):
+        ray_radius_sq = np.square(y[:, :2]).sum(1)
+        good = (ray_radius_sq <= self.radius**2) & \
+               (ray_radius_sq >= self.inner_radius**2)
+        if ref_ray is not None:
+            good[ref_ray] = True
         u = np.where(good[:, None], u, np.nan)
         return u
 
@@ -229,11 +233,11 @@ class Element(NameMixin, TransformMixin):
         m[0, 2] = m[1, 3] = d/n0
         return n0, m
 
-    def propagate(self, y0, u0, n0, l, clip=True):
+    def propagate(self, y0, u0, n0, l, clip=True, ref_ray=None):
         t = self.intercept(y0, u0)
         y = y0 + t[:, None]*u0
         if clip:
-            u0 = self.clip(y, u0)
+            u0 = self.clip(y, u0, ref_ray=ref_ray)
         n = n0
         return y, u0, n, t*n0
 
@@ -305,11 +309,11 @@ class Interface(Element):
             n = self.refractive_index(l)
         return n, m
 
-    def propagate(self, y0, u0, n0, l, clip=True):
+    def propagate(self, y0, u0, n0, l, clip=True, ref_ray=None):
         t = self.intercept(y0, u0)
         y = y0 + t[:, None]*u0
         if clip:
-            u0 = self.clip(y, u0)
+            u0 = self.clip(y, u0, ref_ray=ref_ray)
         u = u0
         n, mu = self.get_n_mu(n0, l)
         if mu:

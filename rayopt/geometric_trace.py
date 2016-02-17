@@ -78,7 +78,7 @@ class GeometricTrace(Trace):
         y, u, n, l = self.y[init], self.u[init], self.n[init], self.l
         y, u = self.system[init].from_normal(y, u)
         for j, yunit in enumerate(self.system.propagate(
-                y, u, n, l, start, stop, clip)):
+                y, u, n, l, start, stop, clip, ref_ray=self.ref)):
             j += start
             self.y[j], self.u[j], self.n[j], self.i[j], self.t[j] = yunit
 

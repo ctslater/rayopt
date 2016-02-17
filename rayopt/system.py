@@ -458,10 +458,10 @@ class System(list):
             state = e.propagate_poly(state, l)
             yield state
 
-    def propagate(self, y, u, n, l, start=1, stop=None, clip=False):
+    def propagate(self, y, u, n, l, start=1, stop=None, clip=False, ref_ray=None):
         for e in self[start:stop]:
             y, i = e.to_normal(y - e.offset, u)
-            y, u, n, t = e.propagate(y, i, n, l, clip)
+            y, u, n, t = e.propagate(y, i, n, l, clip, ref_ray=ref_ray)
             yield y, u, n, i, t
             y, u = e.from_normal(y, u)
 
