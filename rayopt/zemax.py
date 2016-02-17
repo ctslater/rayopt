@@ -128,6 +128,9 @@ def zmx_to_system(data, item=None):
                     print("material not found", name, e)
         elif cmd == "DIAM":
             e.radius = float(args.split()[0])
+        elif cmd == "CLAP":
+            # CLear APerture. This also defines an outer clear aperture radius.
+            e.inner_radius = float(args.split()[0])
         elif cmd == "STOP":
             e.stop = True
         elif cmd == "WAVL":

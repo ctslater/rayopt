@@ -180,11 +180,12 @@ class TransformMixin(object):
 class Element(NameMixin, TransformMixin):
     _default_type = "spheroid"
 
-    def __init__(self, radius=np.inf, diameter=None, **kwargs):
+    def __init__(self, radius=np.inf, diameter=None, inner_radius=0.0, **kwargs):
         super(Element, self).__init__(**kwargs)
         if diameter is not None:
             radius = diameter/2
         self.radius = radius
+        self.inner_radius = inner_radius
 
     def dict(self):
         dat = NameMixin.dict(self)
